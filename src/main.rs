@@ -21,5 +21,4 @@ fn main() {
     info!("runOnce: {}", args.run_once);
     info!("delayInMillis: {}", args.delay_millis);
     info!("deleteFiles: {}", !(args.no_delete_files));
-
 }

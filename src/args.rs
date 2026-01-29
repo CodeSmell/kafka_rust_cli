@@ -1,8 +1,7 @@
 /// Command-line argument parsing
-/// 
+///
 /// Using clap as a CLI parser to manage command-line arguments
 /// Reference: Java ProducerArgs.java
-
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -75,7 +74,7 @@ pub struct ProducerArgs {
 
     //
     // CLI args related to where payload files are located
-    // 
+    //
     /// directory where files are located that will be published to topic
     #[arg(long = "messageLocation", required = true)]
     pub message_location: String,
