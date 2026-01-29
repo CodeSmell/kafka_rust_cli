@@ -27,3 +27,30 @@ kafka_rust_cli/
 | kafka.rs 	 | Kafka publishing utility                   | KafkaProducerUtil    |
 
 
+### Running the Util
+The default mode is to continually poll the directory (`messageLocation`) for files that should be published to Kafka. Once a file is published to the Kafka topic it will be deleted. 
+
+Note: set the environment variable so info statements are printed
+
+```
+// zsh
+export RUST_LOG=info
+
+// fish
+set -x RUST_LOG=info
+
+// with program
+RUST_LOG=info ./target/debug/kafka_pub_cli ...
+```
+
+If the user only wants to run the utility against the directory once then add the parameter (`runOnce`). 
+If the user doesn't want to remove the file then add the parameter (`noDeleteFiles`).
+
+```
+RUST_LOG=info ./target/debug/kafka_pub_cli \
+            --topic foo \
+            --bootstrap-server localhost:9092 \
+            --acks 1 \
+            --messageLocation ~/dev/myKafkaFiles \
+            --runOnce --noDeleteFiles
+```

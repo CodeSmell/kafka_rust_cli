@@ -1,0 +1,33 @@
+[package]
+name = "kafka_rust_cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "kafka_pub_cli"
+path = "src/main.rs"
+
+[dependencies]
+# CLI argument parsing
+clap = { version = "4.4", features = ["derive"] }
+
+# Kafka client
+rdkafka = "0.35"
+
+# Logging
+log = "0.4"
+env_logger = "0.11"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Utilities
+tokio = { version = "1.35", features = ["fs", "io-util"] }
+
+[dev-dependencies]
+tempfile = "3.8"
