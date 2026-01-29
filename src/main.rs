@@ -1,7 +1,7 @@
 mod args;
-mod file;
-mod kafka;
-mod content;
+//mod file;
+//mod kafka;
+//mod content;
 
 use args::ProducerArgs;
 use clap::Parser;
