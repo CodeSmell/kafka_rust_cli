@@ -17,6 +17,7 @@ kafka_rust_cli/
   |   └── kafka.rs
   └── tests/
 ```
+
 ## Overview 
 | Rust file  | Description                        	      | Java class     |
 |---------	 |-----------------------------------------   |--------------- |
@@ -26,6 +27,12 @@ kafka_rust_cli/
 | content.rs | Parses the File contents                   | KafkaContentHandler  |
 | kafka.rs 	 | Kafka publishing utility                   | KafkaProducerUtil    |
 
+## Build the Rust executable
+Unlike Java, building the Rust project produces an executable artifact.
+
+```
+cargo build -q
+```
 
 ### Running the Util
 The default mode is to continually poll the directory (`messageLocation`) for files that should be published to Kafka. Once a file is published to the Kafka topic it will be deleted. 
@@ -54,3 +61,5 @@ RUST_LOG=info ./target/debug/kafka_pub_cli \
             --messageLocation ~/dev/myKafkaFiles \
             --runOnce --noDeleteFiles
 ```
+
+Use the `-h` parameter or review the `args.rs` file to see all of the available parameters. 

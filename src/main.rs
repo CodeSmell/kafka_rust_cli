@@ -1,7 +1,7 @@
 mod args;
-//mod file;
-//mod kafka;
 //mod content;
+mod file;
+//mod kafka;
 
 use args::ProducerArgs;
 use clap::Parser;
@@ -21,4 +21,11 @@ fn main() {
     info!("runOnce: {}", args.run_once);
     info!("delayInMillis: {}", args.delay_millis);
     info!("deleteFiles: {}", !(args.no_delete_files));
+
+    // Simple test: poll directory and list files
+    let service = file::DirectoryPoller;
+    match service.poll_directory(&args.message_location) {
+        Ok(_) => info!("Directory polling completed successfully"),
+        Err(e) => eprintln!("Error polling directory: {}", e),
+    }
 }
