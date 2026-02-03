@@ -4,9 +4,17 @@
 use std::fs;
 use std::path::Path;
 
-pub struct DirectoryPoller;
+pub struct DirectoryPoller {
+    keep_running: bool,
+    delete_files: bool,
+    poll_interval_millis: u64,
+}
 
 impl DirectoryPoller {
+    pub fn builder() -> DirectoryPollerBuilder {
+        DirectoryPollerBuilder::new()
+    }
+
     /// Poll directory for files
     pub fn poll_directory(&self, directory: &str) -> Result<(), Box<dyn std::error::Error>> {
         let directory_path = Path::new(directory);
@@ -40,9 +48,9 @@ impl DirectoryPoller {
 
             // end of poll cycle
             if file_count == 0 {
-                log::info!("No files found in directory on that poll cycle");
+                log::info!("No files found on this poll cycle");
             } else {
-                log::info!("Processed {} files on that poll cycle", file_count);
+                log::info!("Processed {} files on this poll cycle", file_count);
             }
 
             keep_running = self.should_continue_polling();
@@ -52,12 +60,51 @@ impl DirectoryPoller {
     }
 
     fn should_continue_polling(&self) -> bool {
-        // For now we just poll once
-        false
+        self.keep_running
     }
 
     fn file_name(&self, path: &Path) -> String {
         let file_name = path.file_name().unwrap_or_default();
         file_name.to_string_lossy().to_string()
+    }
+}
+
+/// Builder for DirectoryPoller
+pub struct DirectoryPollerBuilder {
+    keep_running: bool,
+    delete_files: bool,
+    poll_interval_millis: u64,
+}
+
+impl DirectoryPollerBuilder {
+    pub fn new() -> Self {
+        DirectoryPollerBuilder {
+            keep_running: false,
+            delete_files: false,
+            poll_interval_millis: 1000,
+        }
+    }
+
+    pub fn keep_running(mut self, keep_running: bool) -> Self {
+        self.keep_running = keep_running;
+        self
+    }
+
+    pub fn delete_files(mut self, delete_files: bool) -> Self {
+        self.delete_files = delete_files;
+        self
+    }
+
+    pub fn poll_interval_millis(mut self, poll_interval_millis: u64) -> Self {
+        self.poll_interval_millis = poll_interval_millis;
+        self
+    }
+
+    pub fn build(self) -> DirectoryPoller {
+        DirectoryPoller {
+            keep_running: self.keep_running,
+            delete_files: self.delete_files,
+            poll_interval_millis: self.poll_interval_millis,
+        }
     }
 }

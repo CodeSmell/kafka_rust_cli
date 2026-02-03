@@ -22,9 +22,14 @@ fn main() {
     info!("delayInMillis: {}", args.delay_millis);
     info!("deleteFiles: {}", !(args.no_delete_files));
 
-    // Simple test: poll directory and list files
-    let service = file::DirectoryPoller;
-    match service.poll_directory(&args.message_location) {
+    // poll directory
+    let poller = file::DirectoryPoller::builder()
+        .keep_running(!args.run_once)
+        .delete_files(!args.no_delete_files)
+        .poll_interval_millis(args.delay_millis)
+        .build();
+
+    match poller.poll_directory(&args.message_location) {
         Ok(_) => info!("Directory polling completed successfully"),
         Err(e) => eprintln!("Error polling directory: {}", e),
     }
