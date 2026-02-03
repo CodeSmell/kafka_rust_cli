@@ -26,7 +26,6 @@ impl DirectoryPoller {
         let mut keep_running = true;
 
         while keep_running {
-
             let mut file_count = 0;
             for directory_iter in fs::read_dir(directory_path)? {
                 let directory_entry = directory_iter?;
@@ -61,5 +60,4 @@ impl DirectoryPoller {
         let file_name = path.file_name().unwrap_or_default();
         file_name.to_string_lossy().to_string()
     }
-
 }
