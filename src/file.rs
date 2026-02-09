@@ -75,7 +75,7 @@ impl DirectoryPoller {
     }
 
     fn process_file(&self, file_path: &Path) {
-        log::info!("Processing file: {:?}", self.file_name(&file_path));
+        log::info!("Processing file: {:?}", self.file_name(file_path));
 
         if self.delete_files {
             // delete file logic
