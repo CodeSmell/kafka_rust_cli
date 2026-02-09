@@ -58,10 +58,18 @@ impl DirectoryPoller {
 
     fn verify_directory(&self, directory_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
         if !directory_path.exists() {
-            return Err(format!("Directory does not exist: {}", self.file_name(directory_path)).into());
+            return Err(format!(
+                "Directory does not exist: {}",
+                self.file_name(directory_path)
+            )
+            .into());
         }
         if !directory_path.is_dir() {
-            return Err(format!("Path is not a directory: {}", self.file_name(directory_path)).into());
+            return Err(format!(
+                "Path is not a directory: {}",
+                self.file_name(directory_path)
+            )
+            .into());
         }
         Ok(())
     }
@@ -75,7 +83,10 @@ impl DirectoryPoller {
                 log::error!("Failed to delete file {}: {}", self.file_name(file_path), e);
             }
         } else {
-            log::info!("File deletion is disabled, skipping deletion for file: {}", self.file_name(file_path));
+            log::info!(
+                "File deletion is disabled, skipping deletion for file: {}",
+                self.file_name(file_path)
+            );
         }
     }
 
