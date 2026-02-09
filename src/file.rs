@@ -15,20 +15,19 @@ impl DirectoryPoller {
         DirectoryPollerBuilder::new()
     }
 
-    /// Poll directory for files
+    // Poll directory for files
     pub fn poll_directory(&self, directory: &str) -> Result<(), Box<dyn std::error::Error>> {
         let directory_path = Path::new(directory);
 
         // Validate directory exists and is a directory
         // and fail fast if it is not valid
         // to avoid repeated attempts in next poll cycle
-        if !directory_path.exists() {
-            return Err(format!("Directory does not exist: {}", directory).into());
-        }
-        if !directory_path.is_dir() {
-            return Err(format!("Path is not a directory: {}", directory).into());
+        match self.verify_directory(directory_path) {
+            Ok(_) => (),
+            Err(e) => return Err(e),
         }
 
+        // Poll the directory
         log::info!("Polling directory: {}", self.file_name(directory_path));
 
         let mut keep_running = true;
@@ -42,15 +41,13 @@ impl DirectoryPoller {
                 // we will skip subdirectories, symlinks etc
                 if file_path.is_file() {
                     file_count += 1;
-                    log::info!("Found file: {:?}", self.file_name(&file_path));
+                    self.process_file(&file_path);
                 }
             }
 
             // end of poll cycle
             if file_count == 0 {
                 log::info!("No files found on this poll cycle");
-            } else {
-                log::info!("Processed {} files on this poll cycle", file_count);
             }
 
             keep_running = self.should_continue_polling();
@@ -59,7 +56,33 @@ impl DirectoryPoller {
         Ok(())
     }
 
+    fn verify_directory(&self, directory_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+        if !directory_path.exists() {
+            return Err(format!("Directory does not exist: {}", self.file_name(directory_path)).into());
+        }
+        if !directory_path.is_dir() {
+            return Err(format!("Path is not a directory: {}", self.file_name(directory_path)).into());
+        }
+        Ok(())
+    }
+
+    fn process_file(&self, file_path: &Path) {
+        log::info!("Processing file: {:?}", self.file_name(&file_path));
+
+        if self.delete_files {
+            // delete file logic
+            if let Err(e) = std::fs::remove_file(file_path) {
+                log::error!("Failed to delete file {}: {}", self.file_name(file_path), e);
+            }
+        } else {
+            log::info!("File deletion is disabled, skipping deletion for file: {}", self.file_name(file_path));
+        }
+    }
+
     fn should_continue_polling(&self) -> bool {
+        if self.keep_running {
+            std::thread::sleep(std::time::Duration::from_millis(self.poll_interval_millis));
+        }
         self.keep_running
     }
 

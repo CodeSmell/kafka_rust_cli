@@ -20,15 +20,16 @@ fn main() {
     info!("messageLocation: {}", args.message_location);
     info!("runOnce: {}", args.run_once);
     info!("delayInMillis: {}", args.delay_millis);
-    info!("deleteFiles: {}", !(args.no_delete_files));
+    info!("noDeleteFiles: {}", args.no_delete_files);
 
-    // poll directory
+    // Build the directory poller
     let poller = file::DirectoryPoller::builder()
         .keep_running(!args.run_once)
         .delete_files(!args.no_delete_files)
         .poll_interval_millis(args.delay_millis)
         .build();
 
+    // poll directory
     match poller.poll_directory(&args.message_location) {
         Ok(_) => info!("Directory polling completed successfully"),
         Err(e) => eprintln!("Error polling directory: {}", e),
