@@ -34,6 +34,18 @@ Unlike Java, building the Rust project produces an executable artifact.
 cargo build -q
 ```
 
+To verify the format of the code 
+
+```
+cargo fmt --all -- --check
+```
+
+Catch common mistakes and improve your Rust code
+
+```
+cargo clippy --all-targets --all-features -- -D warnings
+```
+
 ### Running the Util
 The default mode is to continually poll the directory (`messageLocation`) for files that should be published to Kafka. Once a file is published to the Kafka topic it will be deleted. 
 
