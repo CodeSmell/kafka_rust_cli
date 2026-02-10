@@ -82,7 +82,7 @@ impl DirectoryPoller {
 
         match std::fs::read_to_string(file_path) {
             Ok(content) => {
-                // process file content 
+                // process file content
                 // TODO: accept a lambda/function to process content
                 log::info!("File content: {}", content);
 
@@ -110,8 +110,8 @@ impl DirectoryPoller {
     }
 
     fn should_continue_polling(&self, poll_cycles: i32) -> bool {
-        // max poll cycles takes precedence over the keep_running flag 
-        let continue_polling = if self.max_poll_cycles <=0 {
+        // max poll cycles takes precedence over the keep_running flag
+        let continue_polling = if self.max_poll_cycles <= 0 {
             // max poll cycles is not enabled
             // use the keep_running flag
             self.keep_running
@@ -125,7 +125,7 @@ impl DirectoryPoller {
         if continue_polling {
             std::thread::sleep(std::time::Duration::from_millis(self.poll_interval_millis));
         }
-        
+
         continue_polling
     }
 
