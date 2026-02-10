@@ -222,6 +222,7 @@ impl DirectoryPollerBuilder {
     // wrap the callback function in a Box to allow for dynamic dispatch
     // and use static lifetime since we want the closure
     // to be valid for the life of the DirectoryPoller
+    #[allow(dead_code)]
     pub fn on_file_content<F>(mut self, callback: F) -> Self
     where
         F: Fn(&str) -> Result<(), Box<dyn Error>> + 'static,
