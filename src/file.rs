@@ -188,6 +188,7 @@ pub struct DirectoryPollerBuilder {
 }
 
 impl DirectoryPollerBuilder {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         DirectoryPollerBuilder {
             keep_running: false,
