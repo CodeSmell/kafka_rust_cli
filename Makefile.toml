@@ -1,0 +1,55 @@
+[config]
+# Skip loading of core tasks to keep it minimal
+skip_core_tasks = true
+
+# Default task when running `cargo make`
+[tasks.default]
+alias = "pre-pr"
+
+# Main pre-PR check - runs all verification steps
+[tasks.pre-pr]
+description = "Run all pre-PR checks: format, clippy, build, and nextest"
+dependencies = [  
+    "format-check",
+    "clippy",
+    "build",
+    "test"
+]
+
+# Check if code is formatted correctly (doesn't modify files)
+[tasks.format-check]
+description = "Check code formatting"
+command = "cargo"
+args = ["fmt", "--all", "--", "--check"]
+
+# Run clippy with all warnings
+[tasks.clippy]
+description = "Run clippy linter"
+command = "cargo"
+args = ["clippy", "--all-targets", "--all-features", "--", "-D", "warnings"]
+
+# Build the project
+[tasks.build]
+description = "Build the project"
+command = "cargo"
+args = ["build", "--all-features"]
+
+# Run all tests with nextest
+# Run all tests with nextest (improved output)
+[tasks.test]
+description = "Run tests with nextest (better formatting)"
+command = "cargo"
+args = ["nextest", "run", "--all-features"]
+
+# Run all tests with standard cargo test
+[tasks.test-cargo]
+description = "Run tests with standard cargo test"
+command = "cargo"
+args = ["test", "--all-features", "--", "--nocapture"]
+
+# Lighter clippy for quick checks
+[tasks.clippy-light]
+description = "Run clippy without treating warnings as errors"
+command = "cargo"
+args = ["clippy", "--all-targets", "--all-features"]
+

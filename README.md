@@ -34,6 +34,12 @@ Unlike Java, building the Rust project produces an executable artifact.
 cargo build -q
 ```
 
+To run the tests
+
+```
+cargo tests
+```
+
 To verify the format of the code 
 
 ```
@@ -45,6 +51,39 @@ Catch common mistakes and improve your Rust code
 ```
 cargo clippy --all-targets --all-features -- -D warnings
 ```
+
+### Making life easier - Development Tools
+
+These tools are **optional CLI utilities** for development
+
+#### cargo-nextest - Better Test Reports
+For improved test output and parallel test execution:
+
+```
+cargo install --locked cargo-nextest
+```
+
+Then run:
+```
+cargo nextest run
+```
+
+#### cargo-make - Task Runner
+To combine multiple commands into single tasks, install `cargo-make`:
+
+```
+cargo install cargo-make
+```
+
+This allows us to create custom commands in `Makefile.toml`. The checked-in version has several useful commands that run multiple cargo commands together. This simplifies development and allows a comprehensive check on Rust code before creating a PR.
+
+**Available tasks:**
+
+| command                | Description                        	      | 
+|---------------------	 |-----------------------------------------   |
+| cargo make             | default will run pre-pr                    |
+| cargo make check       | format and clippy only                     | 
+| cargo make pre-pr      | format, clippy, build and nextest          |
 
 ### Running the Util
 The default mode is to continually poll the directory (`messageLocation`) for files that should be published to Kafka. Once a file is published to the Kafka topic it will be deleted. 
