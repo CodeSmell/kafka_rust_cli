@@ -97,16 +97,16 @@ impl DirectoryPoller {
         // 3) try operator (?) (propagate error up)
 
         // panic version of reading a file
-        let content = std::fs::read_to_string(file_path).unwrap_or_else(|_| panic!(
-            "Failed to read file {:?}",
-            self.file_name(file_path)
-        ));
+        let content = std::fs::read_to_string(file_path)
+            .unwrap_or_else(|_| panic!("Failed to read file {:?}", self.file_name(file_path)));
 
         // panic version of processing file content
-        (self.on_file_content)(content.as_str()).unwrap_or_else(|_| panic!(
-            "Failed to process content for file {:?}",
-            self.file_name(file_path)
-        ));
+        (self.on_file_content)(content.as_str()).unwrap_or_else(|_| {
+            panic!(
+                "Failed to process content for file {:?}",
+                self.file_name(file_path)
+            )
+        });
 
         self.delete_file(file_path);
 
