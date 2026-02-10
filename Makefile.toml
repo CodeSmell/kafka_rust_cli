@@ -16,6 +16,14 @@ dependencies = [
     "test"
 ]
 
+# Check - runs format and clippy
+[tasks.check]
+description = "Run format and clippy"
+dependencies = [  
+    "format-check",
+    "clippy-light"
+]
+
 # Check if code is formatted correctly (doesn't modify files)
 [tasks.format-check]
 description = "Check code formatting"
@@ -35,17 +43,17 @@ command = "cargo"
 args = ["build", "--all-features"]
 
 # Run all tests with nextest
-# Run all tests with nextest (improved output)
+# lib + integration tests only
 [tasks.test]
-description = "Run tests with nextest (better formatting)"
+description = "Run tests with nextest (lib + integration tests)"
 command = "cargo"
-args = ["nextest", "run", "--all-features"]
+args = ["nextest", "run", "--lib", "--test", "*", "--all-features"]
 
 # Run all tests with standard cargo test
 [tasks.test-cargo]
-description = "Run tests with standard cargo test"
+description = "Run tests with standard cargo test (lib + integration)"
 command = "cargo"
-args = ["test", "--all-features", "--", "--nocapture"]
+args = ["test", "--lib", "--test", "*", "--all-features"]
 
 # Lighter clippy for quick checks
 [tasks.clippy-light]
