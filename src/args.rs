@@ -84,8 +84,14 @@ pub struct ProducerArgs {
     pub delay_millis: u64,
 
     /// only poll messageLocation once when this parameter is added
+    /// otherwise, the app will continue to poll the directory
     #[arg(long = "runOnce", default_value_t = false)]
     pub run_once: bool,
+
+    /// overrides runOnce and will only poll the specified number of times
+    /// if maxCycles is < 0 then relies on runOnce or keep polling indefinitely
+    #[arg(long = "maxCycles", default_value_t = -1)]
+    pub max_cycles: i32,
 
     /// app will delete the files after a poll unless this parameter is added
     #[arg(long = "noDeleteFiles", default_value_t = false)]
