@@ -89,6 +89,7 @@ impl DirectoryPoller {
     // then pass that to a closure that can be used to process the content
     // TODO: should we pass along Result using chaining instead of panicking in this function
     fn process_file(&self, file_path: &Path) {
+        //-> Result<(), Box<dyn Error>> {
         log::info!("Processing file: {:?}", self.file_name(file_path));
 
         // options to handle Result
@@ -103,7 +104,7 @@ impl DirectoryPoller {
         // panic version of processing file content
         (self.on_file_content)(content.as_str()).unwrap_or_else(|_| {
             panic!(
-                "Failed to process content for file {:?}",
+                "Error processing content of file {:?}",
                 self.file_name(file_path)
             )
         });
@@ -130,6 +131,7 @@ impl DirectoryPoller {
         //         log::error!("Failed to read file {}: {}", self.file_name(file_path), e);
         //     }
         //}
+        //Ok(())
     }
 
     // delete file if the delete_files flag is enabled
@@ -312,5 +314,27 @@ mod tests {
         assert!(result.is_ok());
         assert!(file_path.exists());
         assert_eq!(call_count.get(), poll_cycles);
+    }
+
+    #[test]
+    //#[should_panic(expected = "Simulated error in callback")]
+    #[should_panic(expected = "Error processing content of file \"test_unit.txt\"")]
+    fn call_on_file_content_error() {
+        let temp_dir = tempfile::tempdir().expect("create temp dir failed");
+        let file_path = temp_dir.path().join("test_unit.txt");
+        fs::write(&file_path, "test content").expect("writing temp file failed");
+
+        let poller = DirectoryPoller::builder()
+            .keep_running(false)
+            .delete_files(false)
+            .on_file_content(|content| {
+                assert_eq!(content, "test content");
+                Err("Simulated error in callback".into())
+            })
+            .build();
+        let _ = poller.poll_directory(temp_dir.path().to_str().unwrap());
+        // TODO: we should be able to propagate the error instead of panicking in the callback
+        // assert!(result.is_err());
+        // assert!(file_path.exists());
     }
 }

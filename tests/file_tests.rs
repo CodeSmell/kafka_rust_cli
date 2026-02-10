@@ -115,7 +115,8 @@ fn poll_directory_runs_multiple_cycles() {
 }
 
 #[test]
-#[should_panic(expected = "Simulated error in callback")]
+//#[should_panic(expected = "Simulated error in callback")]
+#[should_panic(expected = "Error processing content of file \"sample.txt\"")]
 fn poll_directory_with_error_in_callback() {
     let (temp_dir, _file_path) = create_temp_dir_with_file();
 
